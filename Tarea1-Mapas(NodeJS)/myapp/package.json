@@ -1,0 +1,19 @@
+{
+  "name": "myapp",
+  "version": "1.0.0",
+  "description": "App simple para mostrar un mapa",
+  "main": "app.js",
+  "scripts": {
+    "start": "beefy app.js:bundle.js --live",
+    "bundle": "browserify app.js -o bundle.js"
+  },
+  "author": "Jaluco",
+  "license": "ISC",
+  "dependencies": {
+    "leaflet": "^1.3.4"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.8",
+    "browserify": "^16.2.3"
+  }
+}

@@ -1,7 +1,8 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from mapping import mapa
+from getJson import get_json_aviones, get_json_buques
 import time
 import os
+import json
 
 HOST_NAME = 'localhost'
 PORT_NUMBER = 9000 # Maybe set this to 9000.
@@ -17,25 +18,28 @@ class MyHandler(BaseHTTPRequestHandler):
 
 	def do_GET(s):
 		"""RESPONDER A UN rEQUEST GET"""
-		# print(s.path)
+		print("REQUEST A:".format(s.path))
 		if "py$" in s.path: # Asumo que el path de request va a tener un py$, recordar pedir los datos con eso
 
 			# Falta manejo de los datos para obtener valores a colocar en la funcion
 			# Mapa se deberá reemplazar por los json
-			mapa()
+			buques = get_json_buques()
+			aviones = get_json_aviones()
 
 
-			with open("map.html") as file:
-				data = file.read()
+			data = json.dumps({"buques": buques, "aviones": aviones})
 
-				## HEADERS
-				s.send_response(200)
-				# Este header será reemplazado por el json, de manera que se pueda interpretar de buena manera
-				s.send_header("Content-type", "text/html")
-				s.end_headers()
+			## HEADERS
+			s.send_response(200)
+			# headers necesarios para que el servidor acepte el request
+			s.send_header("Content-type", "application/json")
+			s.send_header('Access-Control-Allow-Origin', '*')
+			s.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+			s.send_header('Access-Control-Allow-Headers', "Origin, X-Requested-With, Content-Type, Accept, Set-Cookie")
+			s.end_headers()
 
-				## HTML ----- Despues será reemplazado por un json, realizar los cambios perinentes
-				s.wfile.write(data.encode())
+			## HTML ----- Despues será reemplazado por un json, realizar los cambios perinentes
+			s.wfile.write(data.encode())
 
 
 
@@ -62,4 +66,6 @@ if __name__ == '__main__':
 		pass
 	httpd.server_close()
 	print(time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
+
+
 
