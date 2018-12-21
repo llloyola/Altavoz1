@@ -11,14 +11,5 @@
 		<div id="map"></div>
 		<script src="bundle.js"></script>
 
-		<script type="text/javascript">
-			const Http = new XMLHttpRequest();
-			const url='http://localhost:9000/py$';
-			Http.open("GET", url, true);
-			Http.send();
-			Http.onreadystatechange=(e)=>{
-				console.log(Http.responseText)
-			}
-		</script>
 	</body>
 </html>
