@@ -19,11 +19,11 @@ var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 // Funcion para realizar acciones cuando se mueva el mapa
 map.on('moveend', function(e) {
    var center = map.getCenter();
-   zoom = map.getZoom();
    
-
-   lat = center.lat;
-   lon = center.lng;
+   var north = map.getNorth();
+   var south = map.getSouth();
+   var west = map.getWest();
+   var east = map.getEast();
 
 
 });
@@ -33,13 +33,13 @@ map.on('moveend', function(e) {
 var marcadores = [];
 
 // Variables globales para cambios en los links de request de py
-var lat = -33.1;
-var lon = -71.7;
-
-var zoom = 9;
+var north = -32.27;
+var south = -34.08;
+var west = -73.15;
+var east = -70.29;
 
 const Http = new XMLHttpRequest();
-var url=`http://localhost:9000/py$lat=${lat}&lon=${lon}&zoom=${zoom}`;
+var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
 Http.open("GET", url, true);
 Http.send();
 
@@ -94,7 +94,7 @@ Http.onreadystatechange=(e)=>{
 		// PARA REPETIRLO CADA 5 SEGUNDOS
 		setTimeout(function(){
 
-			url=`http://localhost:9000/py$lat=${lat}&lon=${lon}&zoom=${zoom}`;
+			url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
 	
 			Http.open("GET", url, true);
 			Http.send();

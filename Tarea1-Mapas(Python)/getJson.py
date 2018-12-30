@@ -5,13 +5,12 @@ import json
 
 
 # https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds=-32.27,-34.08,-73.15,-70.29
-def get_json_aviones():
-    # Probar con -13.57, -29.56, 142.61, 169.19
+def get_json_aviones(north, south, west, east):
 
     #driver = webdriver.Chrome('/Users/luisl/Desktop/Pega Altavoz/chromedriver')
     driver = webdriver.PhantomJS("phantomjs")
 
-    driver.get("https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds=-32.27,-34.08,-73.15,-70.29")
+    driver.get("https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds={},{},{},{}".format(north, south, west, east))
     json_aviones = json.loads(driver.find_element_by_tag_name("pre").text)
 
     driver.close()
