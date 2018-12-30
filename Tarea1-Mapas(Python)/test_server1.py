@@ -18,8 +18,23 @@ class MyHandler(BaseHTTPRequestHandler):
 
 	def do_GET(s):
 		"""RESPONDER A UN rEQUEST GET"""
-		print("REQUEST A:".format(s.path))
+		print("REQUEST A: {}".format(s.path))
 		if "py$" in s.path: # Asumo que el path de request va a tener un py$, recordar pedir los datos con eso
+
+			# PARSEO DE DATOS
+			raw_data = s.path[s.path.find("$"):]
+
+			lista_data = raw_data.split("&")
+
+			lista_valores = []
+			for i in lista_data:
+				lista_valores.append(i.split("="))
+
+			lat = float(lista_valores[0][1])
+			lon = float(lista_valores[1][1])
+			zoom = int(lista_valores[2][1])
+
+			## print("LAT={}, LON={}, ZOOM={}".format(lat, lon, zoom))
 
 			# Falta manejo de los datos para obtener valores a colocar en la funcion
 			# Mapa se deberá reemplazar por los json
