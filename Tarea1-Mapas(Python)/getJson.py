@@ -10,7 +10,7 @@ def get_json_aviones(north, south, west, east):
     #driver = webdriver.Chrome('/Users/luisl/Desktop/Pega Altavoz/chromedriver')
     driver = webdriver.PhantomJS("phantomjs")
 
-    driver.get("https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds={},{},{},{}".format(north, south, west, east))
+    eval("driver.get('https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds={},{},{},{}'.format(north, south, west, east))")
     json_aviones = json.loads(driver.find_element_by_tag_name("pre").text)
 
     driver.close()

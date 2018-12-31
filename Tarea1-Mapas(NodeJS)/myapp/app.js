@@ -27,9 +27,13 @@ var enviando = false;
 var marcadores = [];
 
 const Http = new XMLHttpRequest();
-var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
-Http.open("GET", url, true);
-Http.send();
+
+if (!enviando){
+
+	var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
+	Http.open("GET", url, true);
+	Http.send();
+}
 
 Http.onreadystatechange=(e)=>{
 	var texto = Http.responseText;
@@ -86,6 +90,8 @@ Http.onreadystatechange=(e)=>{
 
 				enviando = true;
 
+				updateBounds();
+
 				url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
 	
 				Http.open("GET", url, true);
@@ -113,12 +119,7 @@ map.on('moveend', function(e) {
 
 		enviando = true;
 
-		var bounds = map.getBounds();
-   
-		var north = bounds.getNorth();
-		var south = bounds.getSouth();
-		var west = bounds.getWest();
-		var east = bounds.getEast();
+		updateBounds();
 
 		url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
 
@@ -130,3 +131,13 @@ map.on('moveend', function(e) {
 
 
 });
+
+function updateBounds(){
+
+	var bounds = map.getBounds();
+   
+	north = bounds.getNorth();
+	south = bounds.getSouth();
+	west = bounds.getWest();
+	east = bounds.getEast();
+}
