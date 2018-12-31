@@ -15,28 +15,16 @@ var osm_mapnik = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 	attribution: '&copy; OSM Mapnik <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-
-// Funcion para realizar acciones cuando se mueva el mapa
-map.on('moveend', function(e) {
-   var center = map.getCenter();
-   
-   var north = map.getNorth();
-   var south = map.getSouth();
-   var west = map.getWest();
-   var east = map.getEast();
-
-
-});
-
-
-// Array de los marcadores
-var marcadores = [];
-
 // Variables globales para cambios en los links de request de py
 var north = -32.27;
 var south = -34.08;
 var west = -73.15;
 var east = -70.29;
+
+var enviando = false;
+
+// Array de los marcadores
+var marcadores = [];
 
 const Http = new XMLHttpRequest();
 var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
@@ -63,7 +51,7 @@ Http.onreadystatechange=(e)=>{
 			    color: 'red',
 			    fillColor: '#f03',
 			    fillOpacity: 0.5,
-			    radius: 500
+			    radius: 20
 			}).addTo(map);
 	
 			marcadores.push(circle);
@@ -82,7 +70,7 @@ Http.onreadystatechange=(e)=>{
 					color: 'blue',
 					fillColor: '#f03',
 					fillOpacity: 0.5,
-					radius: 500
+					radius: 20
 				}).addTo(map);
 
 				marcadores.push(circle);
@@ -94,10 +82,17 @@ Http.onreadystatechange=(e)=>{
 		// PARA REPETIRLO CADA 5 SEGUNDOS
 		setTimeout(function(){
 
-			url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
+			if (!enviando){
+
+				enviando = true;
+
+				url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
 	
-			Http.open("GET", url, true);
-			Http.send();
+				Http.open("GET", url, true);
+				Http.send();
+
+				enviando = false;
+			}
 	
 		}, 5000);
 	}
@@ -110,3 +105,28 @@ Http.onreadystatechange=(e)=>{
 //				//	L.marker([buques[i].LAT, buques[i].LON]).addTo(map);
 				//}
 }
+
+// Funcion para realizar acciones cuando se mueva el mapa
+map.on('moveend', function(e) {
+
+	if (!enviando){
+
+		enviando = true;
+
+		var bounds = map.getBounds();
+   
+		var north = bounds.getNorth();
+		var south = bounds.getSouth();
+		var west = bounds.getWest();
+		var east = bounds.getEast();
+
+		url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
+
+		Http.open("GET", url, true);
+		Http.send();
+
+		enviando = false;
+	}
+
+
+});

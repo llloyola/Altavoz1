@@ -32,17 +32,20 @@ class MyHandler(BaseHTTPRequestHandler):
                 lista = i.split('=')
                 valores[lista[0]] = lista[1]
 
-            north = float(valores['north'])
-            south = float(valores['south'])
-            west = float(valores['west'])
-            east = float(valores['east'])
+            north = round(float(valores['north']), 2)
+            south = round(float(valores['south']), 2)
+            west = round(float(valores['west']), 2)
+            east = round(float(valores['east']), 2)
 
             ## print("LAT={}, LON={}, ZOOM={}".format(lat, lon, zoom))
 
             # Falta manejo de los datos para obtener valores a colocar en la funcion
             # Mapa se deberá reemplazar por los json
             buques = get_json_buques()
+
+            print("[STARTING FUNCTION] get_json_aviones")
             aviones = get_json_aviones(north, south, west, east)
+            print("[DONE] get_json_aviones")
 
             data = json.dumps({"buques": buques, "aviones": aviones})
 
