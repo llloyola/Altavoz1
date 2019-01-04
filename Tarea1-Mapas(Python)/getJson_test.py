@@ -1,5 +1,6 @@
 from selenium import webdriver
 from urllib.request import urlopen, Request
+from subprocess import check_output
 import json
 #from flask import Flask
 
@@ -21,14 +22,20 @@ def get_json_aviones(north, south, west, east):
 #######################
 
 
-def get_json_buques():
+def get_json_buques(centerx, centery, zoom):
 
-    links = [
-        "https://www.marinetraffic.com/getData/get_data_json_4/z:9/X:76/Y:152/station:0",
-        "https://www.marinetraffic.com/getData/get_data_json_4/z:9/X:77/Y:152/station:0",
-        "https://www.marinetraffic.com/getData/get_data_json_4/z:9/X:76/Y:153/station:0",
-        "https://www.marinetraffic.com/getData/get_data_json_4/z:9/X:77/Y:153/station:0"
-    ]
+    ## PRUEBA 1 - Mezclar con phantomjs
+    while True:
+        print(centerx, centery, zoom)
+        out = check_output(["phantomjs", "GetBarcos.js", str(centerx), str(centery), str(zoom)])
+
+        links = json.loads(out)
+
+        if links[0] != 0:
+            break
+
+        else:
+            print("get_json_buques FAILED -------------- trying again")
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',

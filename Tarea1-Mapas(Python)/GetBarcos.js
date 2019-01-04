@@ -1,3 +1,5 @@
+
+
 // PhantomJS NO soporta promesas
 var phantomjs_webpage = require('webpage');
 var page = phantomjs_webpage.create();
@@ -11,10 +13,11 @@ page.onResourceReceived = function(response) {
 
 	var text_response = JSON.stringify(response.url);
 	if (text_response.indexOf("https://www.marinetraffic.com/getData/get_d")!== -1){
-
-		// Cargo los datos necesarios en la variable global
-		// console.log(JSON.stringify(response.headers));
-		urls.push(text_response);
+		
+			// Cargo los datos necesarios en la variable global
+			// console.log(JSON.stringify(response.headers));
+			urls.push(text_response);
+		
 	}
 	
 };
@@ -52,10 +55,17 @@ page.onError = function(msg, trace) {
 
 // Una función que retorne los links de los urls a los cuales es necesario pedir los datos
 function getData() {
-	page.open('https://www.marinetraffic.com/en/ais/home/centerx:156.6/centery:17.3/zoom:3', function (status){
+	url = "https://www.marinetraffic.com/en/ais/home/centerx:"+ args[1] + "/centery:" + args[2] + "/zoom:" + args[3];
+
+	page.open(url, function (status){
 		console.log(" ")
 	});
+	
 }
+
+// Cargar los datos entregados como argumentos
+var system = require('system');
+var args = system.args;
 
 // Consigue urls
 getData();

@@ -21,6 +21,11 @@ var south = -34.08;
 var west = -73.15;
 var east = -70.29;
 
+var centerx = -71.62;
+var centery = -33.03;
+
+var zoom = 9;
+
 var enviando = false;
 
 // Array de los marcadores
@@ -30,7 +35,8 @@ const Http = new XMLHttpRequest();
 
 if (!enviando){
 
-	var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
+	var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}&centerx=${centerx}&centery=${centery}&zoom=${zoom}`;
+	console.log(url)
 	Http.open("GET", url, true);
 	Http.send();
 }
@@ -51,6 +57,7 @@ Http.onreadystatechange=(e)=>{
 		
 		// MARCADORES DE BUQUES
 		for (var i = buques.length - 1; i >= 0; i--) {
+			console.log(buques[i].LAT)
 			var circle = L.circle([buques[i].LAT, buques[i].LON], {
 			    color: 'red',
 			    fillColor: '#f03',
@@ -92,7 +99,7 @@ Http.onreadystatechange=(e)=>{
 
 				updateBounds();
 
-				url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
+				url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}&centerx=${centerx}&centery=${centery}&zoom=${zoom}`;
 	
 				Http.open("GET", url, true);
 				Http.send();
@@ -100,7 +107,7 @@ Http.onreadystatechange=(e)=>{
 				enviando = false;
 			}
 	
-		}, 5000);
+		}, 2000);
 	}
 				
 //				//var buques = data.buques;
@@ -121,7 +128,7 @@ map.on('moveend', function(e) {
 
 		updateBounds();
 
-		url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}`;
+		url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}&centerx=${centerx}&centery=${centery}&zoom=${zoom}`;
 
 		Http.open("GET", url, true);
 		Http.send();
@@ -140,4 +147,11 @@ function updateBounds(){
 	south = bounds.getSouth();
 	west = bounds.getWest();
 	east = bounds.getEast();
+
+	var center = map.getCenter();
+
+	centerx = center.lng;
+	centery = center.lat;
+
+	zoom = map.getZoom();
 }
