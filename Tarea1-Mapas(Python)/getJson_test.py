@@ -17,6 +17,8 @@ def get_json_aviones(north, south, west, east):
 
     driver.close()
 
+    print(json_aviones)
+
     return json_aviones
 
 #######################
@@ -50,6 +52,8 @@ def get_json_buques(centerx, centery, zoom):
         req = Request(link, headers=headers)
         webpage.extend(json.loads(urlopen(req).read().decode())['data']['rows'])
 
+    print(webpage[0])
+
     return webpage
 
 #######################
@@ -70,4 +74,5 @@ def get_json_buques(centerx, centery, zoom):
 
 if __name__ == "__main__":
 
-    print(get_json_buques())
+    get_json_buques(-71, -33, 9)
+    get_json_aviones(32.27, -34.08, -73.15, -70.29)

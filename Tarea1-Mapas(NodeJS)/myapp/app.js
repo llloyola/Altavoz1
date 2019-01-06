@@ -36,7 +36,6 @@ const Http = new XMLHttpRequest();
 if (!enviando){
 
 	var url=`http://localhost:9000/py$north=${north}&south=${south}&west=${west}&east=${east}&centerx=${centerx}&centery=${centery}&zoom=${zoom}`;
-	console.log(url)
 	Http.open("GET", url, true);
 	Http.send();
 }
@@ -57,15 +56,59 @@ Http.onreadystatechange=(e)=>{
 		
 		// MARCADORES DE BUQUES
 		for (var i = buques.length - 1; i >= 0; i--) {
-			console.log(buques[i].LAT)
-			var circle = L.circle([buques[i].LAT, buques[i].LON], {
-			    color: 'red',
-			    fillColor: '#f03',
-			    fillOpacity: 0.5,
-			    radius: 20
-			}).addTo(map);
+			var lat = parseFloat(buques[i].LAT);
+			var lon = parseFloat(buques[i].LON);
+
+			var SPEED = parseFloat(buques[i].SPEED);
+			var HEADING = parseFloat(buques[i].HEADING);
+
+			console.log("SPEED"+SPEED);
+			console.log("HEADING"+HEADING);
+
+			var lon_vec = 0.0001 * SPEED * Math.sin(Math.PI * HEADING / 180);
+			var lat_vec = 0.0001 * SPEED * Math.cos(Math.PI * HEADING / 180);
+
+			console.log(lon_vec);
+			console.log(lat_vec);
+
+			var buquesCircleOptions = {
+                radius: 5, 
+                stroke: true,
+                color: '#000000',
+                weight: 1,
+                opacity: 1,
+                fill: true,
+                fillColor: 'red', 
+                fillOpacity: 1
+            };
+
+			// Para saber si segun la direccion es positivo o negativo
+			// Primero X
+			if (0<buques[i].HEADING<90 && 270<buques[i].HEADING<360) {
+				lon_vec = lon_vec; // NAda cambia
+			} else {
+				//Pasa a negativo
+				lon_vec = (-1) * lon_vec; 
+			}
+
+			// Luego Y
+			if (0<buques[i].HEADING<180) {
+				// No pasa nada
+				lat_vec = lat_vec;
+			} else {
+				// Pasa a negativo
+				lat_vec = (-1) * lat_vec;
+			}
+
+			var circle = L.circleMarker([buques[i].LAT, buques[i].LON], buquesCircleOptions).addTo(map);
+			
+
+			var line = L.polyline([[lat, lon],[lat+lat_vec, lon+lon_vec]], {color: "red"}).addTo(map);
+
+
 	
 			marcadores.push(circle);
+			marcadores.push(line);
 		}
 		
 		// MARCADORES DE AVIONES
@@ -77,14 +120,28 @@ Http.onreadystatechange=(e)=>{
 
 			if (!Number.isInteger(avion)) {
 
-				var circle = L.circle([avion[1], avion[2]] ,{
-					color: 'blue',
-					fillColor: '#f03',
-					fillOpacity: 0.5,
-					radius: 20
-				}).addTo(map);
+				var heading = avion[3];
+				var speed = avion[5];
+
+				var lon_vec = 0.00005 * speed * Math.sin(Math.PI * heading / 180);
+				var lat_vec = 0.00005 * speed * Math.cos(Math.PI * heading / 180);
+
+				var buquesCircleOptions = {
+            	    radius: 5, 
+            	    stroke: true,
+            	    color: '#000000',
+            	    weight: 1,
+            	    opacity: 1,
+            	    fill: true,
+            	    fillColor: 'blue', 
+            	    fillOpacity: 1
+            	};
+
+            	var circle = L.circleMarker([avion[1], avion[2]], buquesCircleOptions).addTo(map);
+            	var line = L.polyline([[avion[1], avion[2]],[avion[1]+lat_vec, avion[2]+lon_vec]], {color: "blue"}).addTo(map);
 
 				marcadores.push(circle);
+				marcadores.push(line);
 
 			}
 		}
