@@ -17,8 +17,6 @@ def get_json_aviones(north, south, west, east):
 
     driver.close()
 
-    print(json_aviones)
-
     return json_aviones
 
 #######################
@@ -52,7 +50,11 @@ def get_json_buques(centerx, centery, zoom):
         req = Request(link, headers=headers)
         webpage.extend(json.loads(urlopen(req).read().decode())['data']['rows'])
 
-    print(webpage[0])
+    try:
+        with open("data", "w") as file:
+            file.write(json.dumps(webpage[0]))
+    except Exception as e:
+        print(e)
 
     return webpage
 

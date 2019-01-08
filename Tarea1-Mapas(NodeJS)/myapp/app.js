@@ -68,8 +68,11 @@ Http.onreadystatechange=(e)=>{
 			var lon_vec = 0.0001 * SPEED * Math.sin(Math.PI * HEADING / 180);
 			var lat_vec = 0.0001 * SPEED * Math.cos(Math.PI * HEADING / 180);
 
-			console.log(lon_vec);
-			console.log(lat_vec);
+			// Datos buques 
+			var nombre = buques[i].SHIPNAME;
+			var bandera = buques[i].FLAG;
+			var destino = buques[i].DESTINATION;
+
 
 			var buquesCircleOptions = {
                 radius: 5, 
@@ -82,25 +85,9 @@ Http.onreadystatechange=(e)=>{
                 fillOpacity: 1
             };
 
-			// Para saber si segun la direccion es positivo o negativo
-			// Primero X
-			if (0<buques[i].HEADING<90 && 270<buques[i].HEADING<360) {
-				lon_vec = lon_vec; // NAda cambia
-			} else {
-				//Pasa a negativo
-				lon_vec = (-1) * lon_vec; 
-			}
-
-			// Luego Y
-			if (0<buques[i].HEADING<180) {
-				// No pasa nada
-				lat_vec = lat_vec;
-			} else {
-				// Pasa a negativo
-				lat_vec = (-1) * lat_vec;
-			}
 
 			var circle = L.circleMarker([buques[i].LAT, buques[i].LON], buquesCircleOptions).addTo(map);
+			circle.bindPopup("<b>Nombre: </b>"+nombre+"<br><b>Bandera: </b>"+bandera+"<br><b>Hacia: </b>"+destino);
 			
 
 			var line = L.polyline([[lat, lon],[lat+lat_vec, lon+lon_vec]], {color: "red"}).addTo(map);
@@ -126,7 +113,24 @@ Http.onreadystatechange=(e)=>{
 				var lon_vec = 0.00005 * speed * Math.sin(Math.PI * heading / 180);
 				var lat_vec = 0.00005 * speed * Math.cos(Math.PI * heading / 180);
 
-				var buquesCircleOptions = {
+				// Datos del avion
+				var nombre = avion[13];
+				var desde = avion[11];
+				var hacia = avion[12];
+
+				if (nombre === "") {
+					nombre = "N/A";
+				}
+
+				if (desde === ""){
+					desde = "N/A";
+				}
+
+				if (hacia === ""){
+					hacia = "N/A"
+				}
+
+				var avionesCircleOptions = {
             	    radius: 5, 
             	    stroke: true,
             	    color: '#000000',
@@ -137,7 +141,9 @@ Http.onreadystatechange=(e)=>{
             	    fillOpacity: 1
             	};
 
-            	var circle = L.circleMarker([avion[1], avion[2]], buquesCircleOptions).addTo(map);
+            	var circle = L.circleMarker([avion[1], avion[2]], avionesCircleOptions).addTo(map);
+            	//Datos en el popup
+            	circle.bindPopup("<b>Vuelo: </b>"+nombre+"<br><b>Desde: </b>"+desde+"<br><b>Hacia: </b>"+hacia);
             	var line = L.polyline([[avion[1], avion[2]],[avion[1]+lat_vec, avion[2]+lon_vec]], {color: "blue"}).addTo(map);
 
 				marcadores.push(circle);
