@@ -50,6 +50,7 @@ class MyHandler(BaseHTTPRequestHandler):
 			buques = get_json_buques(centerx, centery, zoom)
 			print("[DONE] get_json_buques")
 
+
 			print("[STARTING FUNCTION] get_json_aviones")
 			aviones = get_json_aviones(north, south, west, east)
 			print("[DONE] get_json_aviones")

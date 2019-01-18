@@ -25,7 +25,10 @@ def get_json_aviones(north, south, west, east):
 def get_json_buques(centerx, centery, zoom):
 
     ## PRUEBA 1 - Mezclar con phantomjs
+    count = 0
     while True:
+        ignore = False
+        count += 1
         print(centerx, centery, zoom)
         out = check_output(["phantomjs", "GetBarcos.js", str(centerx), str(centery), str(zoom)])
 
@@ -36,6 +39,10 @@ def get_json_buques(centerx, centery, zoom):
 
         else:
             print("get_json_buques FAILED -------------- trying again")
+            
+            if count == 5:
+                ignore = True
+                break
 
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36',
@@ -46,9 +53,9 @@ def get_json_buques(centerx, centery, zoom):
     webpage = []
 
     for link in links:
-
-        req = Request(link, headers=headers)
-        webpage.extend(json.loads(urlopen(req).read().decode())['data']['rows'])
+        if not ignore:
+            req = Request(link, headers=headers)
+            webpage.extend(json.loads(urlopen(req).read().decode())['data']['rows'])
 
     try:
         with open("data", "w") as file:

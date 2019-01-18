@@ -29,7 +29,8 @@ var zoom = 9;
 var enviando = false;
 
 // Array de los marcadores
-var marcadores = [];
+var marcadores_aviones = [];
+var marcadores_buques = [];
 
 const Http = new XMLHttpRequest();
 
@@ -48,11 +49,18 @@ Http.onreadystatechange=(e)=>{
 	if (Http.readyState === 4) {
 		var data = JSON.parse(texto);
 		var buques = data.buques;
+		console.log(buques);
 		var aviones = data.aviones;
 	
-		marcadores.forEach(function (layer) {	
+		marcadores_aviones.forEach(function (layer) {	
 		    	map.removeLayer(layer);
 			});
+
+		if (buques.length > 1) {
+			marcadores_buques.forEach(function (layer){
+				map.removeLayer(layer);
+			});
+		}
 		
 		// MARCADORES DE BUQUES
 		for (var i = buques.length - 1; i >= 0; i--) {
@@ -61,9 +69,6 @@ Http.onreadystatechange=(e)=>{
 
 			var SPEED = parseFloat(buques[i].SPEED);
 			var HEADING = parseFloat(buques[i].HEADING);
-
-			console.log("SPEED"+SPEED);
-			console.log("HEADING"+HEADING);
 
 			var lon_vec = 0.0001 * SPEED * Math.sin(Math.PI * HEADING / 180);
 			var lat_vec = 0.0001 * SPEED * Math.cos(Math.PI * HEADING / 180);
@@ -94,8 +99,8 @@ Http.onreadystatechange=(e)=>{
 
 
 	
-			marcadores.push(circle);
-			marcadores.push(line);
+			marcadores_buques.push(circle);
+			marcadores_buques.push(line);
 		}
 		
 		// MARCADORES DE AVIONES
@@ -146,8 +151,8 @@ Http.onreadystatechange=(e)=>{
             	circle.bindPopup("<b>Vuelo: </b>"+nombre+"<br><b>Desde: </b>"+desde+"<br><b>Hacia: </b>"+hacia);
             	var line = L.polyline([[avion[1], avion[2]],[avion[1]+lat_vec, avion[2]+lon_vec]], {color: "blue"}).addTo(map);
 
-				marcadores.push(circle);
-				marcadores.push(line);
+				marcadores_aviones.push(circle);
+				marcadores_aviones.push(line);
 
 			}
 		}
